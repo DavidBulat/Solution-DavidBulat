@@ -1,3 +1,5 @@
+import { Link, useLocation } from "react-router";
+
 import { Badge } from "~/components/ui/badge";
 import { ProductTableRowsSkeleton } from "~/components/products/product-table-skeleton";
 import {
@@ -8,8 +10,9 @@ import {
   TableHeader,
   TableRow,
 } from "~/components/ui/table";
+import { getProductReturnTo } from "~/utils/product-navigation";
 import type { Product } from "~/utils/products";
-import { formatPrice } from "~/utils/products";
+import { formatPrice, truncateDescription } from "~/utils/products";
 
 type ProductTableProps = {
   products: Product[];
@@ -17,6 +20,9 @@ type ProductTableProps = {
 };
 
 export function ProductTable({ products, loadingRows = 0 }: ProductTableProps) {
+  const location = useLocation();
+  const returnTo = getProductReturnTo(location.pathname, location.search);
+
   return (
     <div className="rounded-xl ring-1 ring-foreground/10">
       <Table>
@@ -35,17 +41,29 @@ export function ProductTable({ products, loadingRows = 0 }: ProductTableProps) {
           {products.map((product) => (
             <TableRow key={product.id}>
               <TableCell>
-                <img
-                  src={product.thumbnail}
-                  alt={product.title}
-                  className="size-10 rounded-md object-cover"
-                  loading="lazy"
-                />
+                <Link
+                  to={`/products/${product.id}`}
+                  state={{ returnTo }}
+                  className="block rounded-md focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
+                >
+                  <img
+                    src={product.thumbnail}
+                    alt={product.title}
+                    className="size-10 rounded-md object-cover"
+                    loading="lazy"
+                  />
+                </Link>
               </TableCell>
               <TableCell className="max-w-xs whitespace-normal">
-                <div className="font-medium">{product.title}</div>
+                <Link
+                  to={`/products/${product.id}`}
+                  state={{ returnTo }}
+                  className="rounded-sm font-medium hover:underline focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
+                >
+                  {product.title}
+                </Link>
                 <div className="line-clamp-1 text-muted-foreground">
-                  {product.description}
+                  {truncateDescription(product.description)}
                 </div>
               </TableCell>
               <TableCell>{product.brand || "—"}</TableCell>

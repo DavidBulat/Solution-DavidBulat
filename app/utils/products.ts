@@ -11,6 +11,25 @@ export type Product = {
   thumbnail: string;
 };
 
+export type ProductDetail = Product & {
+  images: string[];
+  tags: string[];
+  sku: string;
+  weight: number;
+  warrantyInformation: string;
+  shippingInformation: string;
+  availabilityStatus: string;
+  returnPolicy: string;
+  minimumOrderQuantity: number;
+  reviews: Array<{
+    rating: number;
+    comment: string;
+    date: string;
+    reviewerName: string;
+    reviewerEmail: string;
+  }>;
+};
+
 export type ProductsResponse = {
   products: Product[];
   total: number;
@@ -159,6 +178,22 @@ function applyClientFilters(
   });
 }
 
+export async function fetchProduct(id: number) {
+  const response = await fetch(
+    `${import.meta.env.VITE_API_URL}/products/${id}`
+  );
+
+  if (response.status === 404) {
+    throw new Error("Product not found");
+  }
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch product");
+  }
+
+  return (await response.json()) as ProductDetail;
+}
+
 export async function fetchCategories() {
   const response = await fetch(
     `${import.meta.env.VITE_API_URL}/products/category-list`
@@ -229,6 +264,21 @@ export function formatPrice(price: number) {
     style: "currency",
     currency: "USD",
   }).format(price);
+}
+
+export function truncateDescription(description: string, maxLength = 100) {
+  if (description.length <= maxLength) {
+    return description;
+  }
+
+  return `${description.slice(0, maxLength).trimEnd()}…`;
+}
+
+export function formatCategoryLabel(category: string) {
+  return category
+    .split("-")
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(" ");
 }
 
 export function getTotalPages(total: number, limit: number) {

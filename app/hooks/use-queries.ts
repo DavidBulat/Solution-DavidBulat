@@ -16,6 +16,7 @@ import {
 } from "~/utils/auth";
 import {
   fetchCategories,
+  fetchProduct,
   fetchProducts,
   type ProductFilters,
   type ProductListFilters,
@@ -78,6 +79,14 @@ export function useInfiniteProductsQuery(
       const nextSkip = lastPage.skip + lastPage.products.length;
       return nextSkip < lastPage.total ? nextSkip : undefined;
     },
+  });
+}
+
+export function useProductQuery(id: number) {
+  return useQuery({
+    queryKey: queryKeys.products.detail(id),
+    queryFn: () => fetchProduct(id),
+    enabled: Number.isFinite(id) && id > 0,
   });
 }
 

@@ -13,6 +13,7 @@ import { Skeleton } from "~/components/ui/skeleton";
 import { useCategoriesQuery } from "~/hooks/use-queries";
 import {
   buildProductSearchParams,
+  formatCategoryLabel,
   hasActiveProductFilters,
   parseProductSearchParams,
 } from "~/utils/products";
@@ -168,11 +169,4 @@ function parsePriceInput(value: string) {
 
   const parsed = Number(value);
   return Number.isFinite(parsed) && parsed >= 0 ? parsed : null;
-}
-
-function formatCategoryLabel(category: string) {
-  return category
-    .split("-")
-    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
-    .join(" ");
 }

@@ -6,6 +6,7 @@ export const queryKeys = {
       ["products", "list", filters] as const,
     infinite: (filters: Record<string, unknown>) =>
       ["products", "infinite", filters] as const,
+    detail: (id: number) => ["products", "detail", id] as const,
   },
   auth: {
     all: ["auth"] as const,
