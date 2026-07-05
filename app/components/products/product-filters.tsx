@@ -19,6 +19,7 @@ import {
 } from "~/components/ui/sheet";
 import { Skeleton } from "~/components/ui/skeleton";
 import { useCategoriesQuery } from "~/hooks/use-queries";
+import { cn } from "~/lib/utils";
 import {
   buildProductSearchParams,
   decodeProductSort,
@@ -124,7 +125,7 @@ export function ProductFiltersBar() {
                 <SheetHeader>
                   <SheetTitle>Filters</SheetTitle>
                 </SheetHeader>
-                <div className="space-y-4 overflow-y-auto px-4 pb-4">
+                <div className="flex flex-col gap-4 overflow-y-auto px-4 pt-2 pb-6">
                   <AdvancedFilters
                     filters={filters}
                     categories={categories}
@@ -199,7 +200,7 @@ function AdvancedFilters({
   onUpdate: (updates: Parameters<typeof buildProductSearchParams>[1]) => void;
 }) {
   return (
-    <div className={className}>
+    <div className={cn("flex flex-col gap-4", className)}>
       <div className="space-y-2">
         <Label htmlFor="product-category">Category</Label>
         {categoriesPending ? (
