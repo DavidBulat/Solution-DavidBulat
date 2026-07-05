@@ -9,6 +9,7 @@ import {
 
 import type { Route } from "./+types/root";
 import { Navbar } from "~/components/navbar";
+import { ScrollToTop } from "~/components/scroll-to-top";
 import { QueryProvider } from "~/components/providers/query-provider";
 import { ThemeProvider } from "~/components/providers/theme-provider";
 import "./app.css";
@@ -50,6 +51,7 @@ export default function App() {
       <QueryProvider>
         <Navbar />
         <Outlet />
+        <ScrollToTop />
       </QueryProvider>
     </ThemeProvider>
   );

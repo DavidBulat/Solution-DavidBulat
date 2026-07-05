@@ -1,20 +1,10 @@
-import {
-  InfinityIcon,
-  LayoutGridIcon,
-  ListOrderedIcon,
-  TableIcon,
-} from "lucide-react";
 import { useSearchParams } from "react-router";
 
 import { ProductFiltersBar } from "~/components/products/product-filters";
 import { ProductInfiniteScroll } from "~/components/products/product-infinite-scroll";
 import { ProductPagesContent } from "~/components/products/product-pages-content";
 import { ProductsSummarySkeleton } from "~/components/products/products-loading-skeleton";
-import {
-  NativeSelect,
-  NativeSelectOption,
-} from "~/components/ui/native-select";
-import { Tabs, TabsList, TabsTrigger } from "~/components/ui/tabs";
+import { ProductViewControls } from "~/components/products/product-view-controls";
 import {
   useInfiniteProductsQuery,
   useProductsQuery,
@@ -23,7 +13,6 @@ import { useRestoreListScroll } from "~/hooks/use-restore-list-scroll";
 import {
   buildProductSearchParams,
   getPageRange,
-  LIMIT_OPTIONS,
   parseProductSearchParams,
   toProductListFilters,
 } from "~/utils/products";
@@ -59,71 +48,38 @@ export function ProductsView() {
 
   useRestoreListScroll(isContentReady);
 
+  const controls = (
+    <ProductViewControls
+      scroll={scroll}
+      view={view}
+      limit={limit}
+      onScrollChange={(value) =>
+        updateParams({
+          scroll: value,
+          page: 1,
+        })
+      }
+      onViewChange={(value) => updateParams({ view: value })}
+      onLimitChange={(value) =>
+        updateParams({
+          limit: value,
+          page: 1,
+        })
+      }
+    />
+  );
+
   return (
     <div className="space-y-6">
-      <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+      <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
         <ProductsSummary filters={filters} isInfinite={isInfinite} />
 
-        <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
-          <Tabs
-            value={scroll}
-            onValueChange={(value) =>
-              updateParams({
-                scroll: value as "pages" | "infinite",
-                page: 1,
-              })
-            }
-          >
-            <TabsList>
-              <TabsTrigger value="pages">
-                <ListOrderedIcon />
-                Pages
-              </TabsTrigger>
-              <TabsTrigger value="infinite">
-                <InfinityIcon />
-                Infinite
-              </TabsTrigger>
-            </TabsList>
-          </Tabs>
-
-          <Tabs
-            value={view}
-            onValueChange={(value) =>
-              updateParams({ view: value as "cards" | "table" })
-            }
-          >
-            <TabsList>
-              <TabsTrigger value="cards">
-                <LayoutGridIcon />
-                Cards
-              </TabsTrigger>
-              <TabsTrigger value="table">
-                <TableIcon />
-                Table
-              </TabsTrigger>
-            </TabsList>
-          </Tabs>
-
-          <NativeSelect
-            value={String(limit)}
-            aria-label="Products per page"
-            onChange={(event) =>
-              updateParams({
-                limit: Number(event.target.value),
-                page: 1,
-              })
-            }
-          >
-            {LIMIT_OPTIONS.map((option) => (
-              <NativeSelectOption key={option} value={String(option)}>
-                {option} per page
-              </NativeSelectOption>
-            ))}
-          </NativeSelect>
-        </div>
+        <div className="hidden md:block">{controls}</div>
       </div>
 
       <ProductFiltersBar />
+
+      <div className="md:hidden">{controls}</div>
 
       {isInfinite ? (
         <ProductInfiniteScroll
